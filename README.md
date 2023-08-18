@@ -1,4 +1,3 @@
-# react-practice-projects
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 It creates a tic-tac-toe game using various react components.
 Below you will find some information on how to perform common tasks.<br>
