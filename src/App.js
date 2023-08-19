@@ -4,7 +4,7 @@ function Square({value,onSquareClick}){
  
   return <button className="square" onClick={onSquareClick}>{value}</button>
 }
- function Board({xIsNext,squares,onPlay}) {
+ function Board({xIsNext,squares,status,onPlay}) {
   //const[xIsNext,setXIsNext]=useState(true)
   //  const [squares, setSquares] = useState(Array(9).fill(null));
   function handleClick(i){
@@ -28,17 +28,17 @@ function Square({value,onSquareClick}){
     onPlay(nextSquares);
   }
     const winner=calculateWinner(squares);
-    let status;
+    let game_status;
     if(winner){
-     status='Winner: '+winner;
-     //alert(current_status);
+     game_status='Winner: '+winner;
+    }else if(status==='Draw') {
+        game_status = 'Game Draw';
     }else{
-      status='Next player: '+(xIsNext?'X':'O');
-     // alert(current_status);
+      game_status='Next player: '+(xIsNext?'X':'O');
     }
   return (
   <div>
-  <div className="staus">{status}</div>
+  <div className="staus">{game_status}</div>
   <div className="board-row">
   <Square value={squares[0]} onSquareClick={() => handleClick(0)}/>
   <Square value={squares[1]} onSquareClick={() => handleClick(1)}/>
@@ -66,15 +66,17 @@ export default function Game(){
   const xIsNext=currentMove % 2 === 0;
   function handlePlay(nextSquares){
  //setHistory([...history,nextSquares]);
+  console.log("history",history);
  const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+ console.log("currentMove",currentMove);
+ console.log("nextHistory",nextHistory);
   setHistory(nextHistory);
   //setXIsNext(!xIsNext);
   setCurrentMove(nextHistory.length - 1);
   }
- 
+
   function jumpTo(move){
     setCurrentMove(move);
-   // setXIsNext(move % 2 === 0);
   }
   const moves = history.map((squares, move) => {
     let description;
@@ -89,16 +91,19 @@ export default function Game(){
       </li>
     );
   });
-
+  let status;
+    if(currentMove===9 && !calculateWinner(currentSquares)){
+        status='Draw';
+    }
   return(
-<div className='game'>
-  <div className="game-board">
-  <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay}></Board>
-  </div>
-<div className='game-info'>
-  <ol>{moves}</ol>
-</div>
-</div>
+      <div className='game'>
+          <div className="game-board">
+              <Board xIsNext={xIsNext} squares={currentSquares} status={status} onPlay={handlePlay}></Board>
+          </div>
+          <div className='game-info'>
+              <ol>{moves}</ol>
+          </div>
+      </div>
 );
   
 }
